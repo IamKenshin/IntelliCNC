@@ -237,6 +237,8 @@ If the do_next argument is 0, an error does not stop interpretation.
 
 If the do_next argument is 2, an error stops interpretation.
 
+If the do_next argument is 3, this goes into MDI mode even if an error is not found.
+
 */
 
 int interpret_from_file( /* ARGUMENTS                  */
@@ -252,7 +254,7 @@ int interpret_from_file( /* ARGUMENTS                  */
   for(; ;)
     {
       status = interp_read();
-      if ((status == INTERP_EXECUTE_FINISH) && (block_delete == ON) && (do_next != 3))
+      if ((status == INTERP_EXECUTE_FINISH) && (block_delete == ON) && (do_next != 3)) /* 3 means MDI without errors */
         continue;
       else if (status == INTERP_ENDFILE)
         break;
