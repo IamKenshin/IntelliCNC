@@ -1,0 +1,8 @@
+G28	; Home
+G0 X45 Y27 Z -14.76	; Max speed move
+G1 X6 Y857 Z14 F100	; Slow move
+G91 G0 X5	; Move 5 right
+G1000
+G90 G0 Y17
+G28	; Reset
+M30	; End

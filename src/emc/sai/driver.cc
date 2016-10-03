@@ -252,20 +252,23 @@ int interpret_from_file( /* ARGUMENTS                  */
   for(; ;)
     {
       status = interp_read();
-      if ((status == INTERP_EXECUTE_FINISH) && (block_delete == ON))
+      if ((status == INTERP_EXECUTE_FINISH) && (block_delete == ON) && (do_next != 3))
         continue;
       else if (status == INTERP_ENDFILE)
         break;
-      if ((status != INTERP_OK) &&    // should not be EXIT
+      if ((status != INTERP_OK || do_next == 3) &&    // should not be EXIT
           (status != INTERP_EXECUTE_FINISH))
         {
-          report_error(status, print_stack);
+          if (do_next == 3)
+            status = interp_execute();
+          else
+            report_error(status, print_stack);
           if (do_next == 2) /* 2 means stop */
             {
               status = 1;
               break;
             }
-          else if (do_next == 1) /* 1 means MDI */
+          else if (do_next == 1 || do_next == 3) /* 1 means MDI */
             {
               fprintf(stderr, "starting MDI\n");
               interpret_from_keyboard(block_delete, print_stack);
@@ -579,7 +582,7 @@ int main (int argc, char ** argv)
     {
 usage:
       fprintf(stderr,
-            "Usage: %s [-p interp.so] [-t tool.tbl] [-v var-file.var] [-n 0|1|2]\n"
+            "Usage: %s [-p interp.so] [-t tool.tbl] [-v var-file.var] [-n 0|1|2|3]\n"
             "          [-b] [-s] [-g] [input file [output file]]\n"
             "\n"
             "    -p: Specify the pluggable interpreter to use\n"
@@ -589,6 +592,7 @@ usage:
             "           0: continue\n"
             "           1: enter MDI mode\n"
             "           2: stop (default)\n"
+            "           3: interactive\n"
             "    -b: Toggle the 'block delete' flag (default: OFF)\n"
             "    -s: Toggle the 'print stack' flag (default: OFF)\n"
             "    -g: Toggle the 'go (batch mode)' flag (default: OFF)\n"
