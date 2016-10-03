@@ -260,9 +260,12 @@ int interpret_from_file( /* ARGUMENTS                  */
           (status != INTERP_EXECUTE_FINISH))
         {
           if (do_next == 3)
-            status = interp_execute();
-          else
-            report_error(status, print_stack);
+            {
+              if (status != INTERP_OK)
+                report_error(status, print_stack);
+              else
+                status = interp_execute();
+            }
           if (do_next == 2) /* 2 means stop */
             {
               status = 1;
